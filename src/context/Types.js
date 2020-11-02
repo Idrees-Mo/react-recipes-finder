@@ -1,0 +1,5 @@
+export const SET_RECIPES = 'SET_RECIPES'
+export const SET_RECIPE = 'SET_RECIPE'
+export const SET_ERROR = 'SET_ERROR'
+export const SET_MODAL = 'SET_MODAL'
+export const SET_LOADING = 'SET_LOADING'
