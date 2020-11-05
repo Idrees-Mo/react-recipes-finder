@@ -13,13 +13,16 @@ const Main = () => {
     loading,
     GET_RECIPES,
     GET_RECIPE,
+    TOGGLE_FAV_RECIPE,
     TOGGLE_MODAL
   } = useContext(RecipeContext)
 
   return (
     <MainStyle>
       <RecipeSearch getRecipes={GET_RECIPES} />
-      <Recipes recipes={recipes} getRecipe={GET_RECIPE} />
+      <Recipes recipes={recipes}
+        getRecipe={GET_RECIPE}
+        toggleFavRecipe={TOGGLE_FAV_RECIPE} />
       {loading && <h1>Loading</h1>}
       {showModal && <RecipeModal recipe={recipe} toggleModal={TOGGLE_MODAL} />}
     </MainStyle>
@@ -27,10 +30,11 @@ const Main = () => {
 }
 
 const MainStyle = styled.div`
-background-color:green;
-width:80%;
+width:90%;
 margin:0 auto;
 max-width:1360px;
 `
 
 export default Main
+
+// width to 80% as main app wrapper 

@@ -6,6 +6,8 @@ import data from '../../data/data.json'
 import {
   SET_RECIPES,
   SET_RECIPE,
+  ADD_FAV_RECIPES,
+  REMOVE_FAV_RECIPES,
   SET_ERROR,
   SET_MODAL,
   SET_LOADING
@@ -16,17 +18,19 @@ let base_url = process.env.REACT_APP_BASE_URL
 let api_key = process.env.REACT_APP_API_KEY
 const RecipeState = ({ children }) => {
   const initialState = {
-    showModal: false,
-    loading: false,
-    serchTitle: '',
     recipes: data.recipes.results,
     recipe: {},
+    favouriteRecipes: [],
+    serchTitle: '',
+    showModal: false,
+    loading: false,
     error: null,
   }
 
   const [state, dispatch] = useReducer(RecipeReducer, initialState)
 
   const GET_RECIPES = async (searchValue) => {
+    TOGGLE_LOADING()
     let url;
     if (!searchValue) {
       url = `${base_url}complexSearch?apiKey=${api_key}`
@@ -39,7 +43,9 @@ const RecipeState = ({ children }) => {
         type: SET_RECIPES,
         payload: response.data.results
       })
+      TOGGLE_LOADING()
 
+      console.log(response)
     } catch (error) {
       dispatch({
         type: SET_ERROR,
@@ -47,6 +53,7 @@ const RecipeState = ({ children }) => {
 
       })
     }
+    TOGGLE_FAV_RECIPE()
   }
 
   const GET_RECIPE = async (recipe_id, recipe_img) => {
@@ -69,6 +76,8 @@ const RecipeState = ({ children }) => {
       })
       TOGGLE_LOADING()
       TOGGLE_MODAL()
+      console.log(res_1)
+      console.log(res_2)
 
     } catch (error) {
       dispatch({
@@ -76,6 +85,17 @@ const RecipeState = ({ children }) => {
         payload: error.message
       })
     }
+  }
+
+  const TOGGLE_FAV_RECIPE = (recipe_id, recipe_img) => {
+    const res1 = state.favouriteRecipes.find(r => r.recipe_id === recipe_id)
+    if (!res1) {
+      dispatch({
+        type: ADD_FAV_RECIPES,
+        payload: { recipe_id, recipe_img }
+      })
+    }
+    console.log(state.recipes)
   }
 
   const TOGGLE_MODAL = () => {
@@ -92,8 +112,10 @@ const RecipeState = ({ children }) => {
       error: state.error,
       showModal: state.showModal,
       loading: state.loading,
+      favouriteRecipes: state.favouriteRecipes,
       GET_RECIPES,
       GET_RECIPE,
+      TOGGLE_FAV_RECIPE,
       TOGGLE_MODAL,
     }}>
       {children}
