@@ -1,8 +1,15 @@
-import { SET_ERROR, SET_RECIPES, SET_RECIPE, SET_MODAL, SET_LOADING, ADD_FAV_RECIPES } from "../Types"
+import {
+  GET_RECIPES,
+  GET_RECIPE,
+  ADD_FAV_RECIPE,
+  SET_ERROR,
+  TOGGLE_MODAL,
+  SET_LOADING,
+} from "../Types"
 
 const reduer = (state, action) => {
   switch (action.type) {
-    case SET_RECIPES:
+    case GET_RECIPES:
       return {
         ...state,
         recipes: action.payload
@@ -12,20 +19,23 @@ const reduer = (state, action) => {
         ...state,
         error: action.payload
       }
-    case SET_RECIPE:
+    case GET_RECIPE:
       return {
         ...state,
         recipe: action.payload,
       }
-    case ADD_FAV_RECIPES:
-      const recipeIds = JSON.parse(localStorage.getItem('recipesIds')) || []
-      localStorage.setItem('recipesIds', JSON.stringify([...recipeIds.filter(id => id !== action.payload.recipe_id), action.payload.recipe_id]))
+    case ADD_FAV_RECIPE:
+      let recipeIds = JSON.parse(localStorage.getItem('recipesIds')) || []
+      localStorage.setItem('recipesIds', JSON.stringify([...recipeIds.filter(id => id.recipe_id !== action.payload.recipe_id), action.payload]))
+      recipeIds = JSON.parse(localStorage.getItem('recipesIds'))
+      let ids = [...recipeIds.map((r) => r.recipe_id)]
+      console.log(ids)
       return {
         ...state,
         // favouriteRecipes: [...state.favouriteRecipes.filter(id => id.recipe_id !== action.payload.recipe_id), action.payload]
-        recipes: [...state.recipes.map((r) => r.id === recipeIds.find((id) => id === r.id) ? { ...r, "fav": true } : r)]
+        recipes: [...state.recipes.map((r) => r.id === ids.find((id) => id === r.id) ? { ...r, "fav": true } : r)]
       }
-    case SET_MODAL:
+    case TOGGLE_MODAL:
       return {
         ...state,
         showModal: !state.showModal,
